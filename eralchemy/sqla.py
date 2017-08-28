@@ -26,7 +26,7 @@ def relation_to_intermediary(fk):
 def format_type(typ):
     """ Transforms the type into a nice string representation. """
     if isinstance(typ, Enum):
-        return "ENUM {{{elements}}}".format(elements=",".join("'"+el.name+"'" for el in chain.from_iterable(list(en) for en in typ.enums)))
+        return "ENUM {{{elements}}}".format(elements=",".join("'"+el+"'" for el in list(typ.enums)))
     try:
         return unicode(typ)
     except CompileError:
