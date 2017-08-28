@@ -2,7 +2,6 @@
 """
 This class allow to transform SQLAlchemy metadata to the intermediary syntax.
 """
-
 from eralchemy.models import Relation, Column, Table
 import sys
 from sqlalchemy.exc import CompileError
@@ -40,6 +39,9 @@ def column_to_intermediary(col, type_formatter=format_type):
         name=col.name,
         type=type_formatter(col.type),
         is_key=col.primary_key,
+        nullable=col.nullable,
+        foreign_keys=col.foreign_keys,
+        unique=col.unique,
     )
 
 

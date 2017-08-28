@@ -44,7 +44,8 @@ class Column(Drawable):
             is_key='*' in match.group('primary'),  # TODO foreign key
         )
 
-    def __init__(self, name, type=None, is_key=False):
+    def __init__(self, name, type=None, is_key=False, nullable=True,
+                 foreign_keys=set(), unique=False):
         """
         :param name: (str) Name of the column
         :param type:
@@ -54,21 +55,32 @@ class Column(Drawable):
         self.name = name
         self.type = type
         self.is_key = is_key
+        self.nullable = nullable
+        self.foreign_keys = foreign_keys
+        self.unique = unique
 
     @property
     def key_symbol(self):
-        return '*' if self.is_key else ''
+        if self.is_key:
+            return '*'
+        elif self.foreign_keys:
+            return 'FK'
+        else:
+            return ''
 
     def to_markdown(self):
         return '    {}{} {{label:"{}"}}'.format(self.key_symbol, self.name, self.type)
 
     def to_dot(self):
-        base = ROW_TAGS.format(' ALIGN="LEFT"', '{key_opening}{col_name}{key_closing}{type}')
+        base = ROW_TAGS.format(' ALIGN="LEFT"', '{fk}{key_opening}{col_name}{key_closing}{type}{nullable_constraint}{unique_constraint}')
         return base.format(
+            fk='FK ' if self.foreign_keys else '',
             key_opening='<u>' if self.is_key else '',
             key_closing='</u>' if self.is_key else '',
             col_name=FONT_TAGS.format(self.name),
-            type=FONT_TAGS.format(' [{}]').format(self.type) if self.type is not None else ''
+            type=FONT_TAGS.format(' [{}]').format(self.type) if self.type is not None else '',
+            nullable_constraint=' NOT NULL' if self.nullable else '',
+            unique_constraint=' UNIQUE' if self.unique else '',
         )
 
 
