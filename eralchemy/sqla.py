@@ -2,6 +2,9 @@
 """
 This class allow to transform SQLAlchemy metadata to the intermediary syntax.
 """
+from itertools import chain
+
+from sqlalchemy import Enum
 from eralchemy.models import Relation, Column, Table
 import sys
 from sqlalchemy.exc import CompileError
@@ -22,6 +25,8 @@ def relation_to_intermediary(fk):
 
 def format_type(typ):
     """ Transforms the type into a nice string representation. """
+    if isinstance(typ, Enum):
+        return "ENUM {{{elements}}}".format(elements=",".join("'"+el.name+"'" for el in chain.from_iterable(list(en) for en in typ.enums)))
     try:
         return unicode(typ)
     except CompileError:

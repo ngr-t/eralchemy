@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import Column, Integer, ForeignKey, UnicodeText, Text, Boolean, DateTime, Unicode, String, Table
+import enum
+from sqlalchemy import Column, Integer, ForeignKey, UnicodeText, Text, Boolean, DateTime, Unicode, String, Table, Enum
 from sqlalchemy.orm import relation
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
@@ -19,6 +20,12 @@ post_tags = Table("post_tags", Base.metadata,
                          primary_key=True))
 
 
+class Gender(enum.Enum):
+
+    male = 1
+    female = 2
+
+
 class User(Base):
     __tablename__ = "users"
 
@@ -29,6 +36,7 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     username = Column(Unicode(60), unique=True, nullable=False)
+    gender = Column(Enum(Gender))
     email = Column(String(150), unique=True, nullable=False)
     karma = Column(Integer, default=0)
     date_joined = Column(DateTime, default=datetime.utcnow)
