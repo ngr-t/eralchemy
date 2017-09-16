@@ -79,7 +79,7 @@ class Column(Drawable):
             key_closing='</u>' if self.is_key else '',
             col_name=FONT_TAGS.format(self.name),
             type=FONT_TAGS.format(' [{}]').format(self.type) if self.type is not None else '',
-            nullable_constraint=' NOT NULL' if self.nullable else '',
+            nullable_constraint=' NOT NULL' if not self.nullable else '',
             unique_constraint=' UNIQUE' if self.unique else '',
         )
 
